@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Kit de Derrame de Planta Tratayen</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #e0f2fe; }
+        
+        .login-container { 
+            min-height: 100vh; 
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+        }
+        
+        .login-box { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+            width: 100%; 
+            max-width: 400px; 
+        }
+        
+        .login-title { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            color: #333; 
+            font-size: 24px; 
+        }
+        
+        .login-subtitle { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            color: #666; 
+            font-size: 14px; 
+        }
+        
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        .form-label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #333; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        
+        .form-input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #ddd; 
+            border-radius: 6px; 
+            font-size: 16px; 
+        }
+        
+        .form-input:focus { 
+            outline: none; 
+            border-color: #3b82f6; 
+        }
+        
+        .btn { 
+            width: 100%; 
+            padding: 12px; 
+            background: #3b82f6; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            margin-top: 10px; 
+        }
+        
+        .btn:hover { 
+            background: #2563eb; 
+        }
+        
+        .user-info { 
+            text-align: center; 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: #f8f9fa; 
+            border-radius: 6px; 
+            font-size: 12px; 
+            color: #666; 
+        }
+        
+        .main-container { 
+            min-height: 100vh; 
+            background: #e0f2fe; 
+        }
+        
+        .header { 
+            background: #bfdbfe; 
+            padding: 20px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; 
+        }
+        
+        .header-title { 
+            font-size: 24px; 
+            color: #333; 
+            font-weight: bold; 
+        }
+        
+        .header-subtitle { 
+            font-size: 14px; 
+            color: #666; 
+        }
+        
+        .header-actions { 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+            flex-wrap: wrap; 
+        }
+        
+        .btn-small { 
+            padding: 8px 16px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 14px; 
+        }
+        
+        .btn-green { 
+            background: #059669; 
+            color: white; 
+        }
+        
+        .btn-red { 
+            background: #dc2626; 
+            color: white; 
+        }
+        
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; 
+            padding: 20px; 
+        }
+        
+        .stat-card { 
+            background: #dbeafe; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            border: 2px solid transparent; 
+        }
+        
+        .stat-card:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+            background: #bfdbfe; 
+        }
+        
+        .stat-card.active { 
+            border: 3px solid #3b82f6; 
+            background: #1e40af; 
+            color: white;
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); 
+            animation: pulse 2s infinite;
+        }
+        
+        .stat-card.active .stat-number { 
+            color: white !important; 
+        }
+        
+        .stat-card.active .stat-label { 
+            color: white !important; 
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); 
+            }
+            50% { 
+                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.7); 
+            }
+        }
+        
+        .stat-number { 
+            font-size: 32px; 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+        }
+        
+        .stat-label { 
+            font-size: 14px; 
+            color: #666; 
+        }
+        
+        .green { color: #1e40af; }
+        .blue { color: #3b82f6; }
+        .yellow { color: #0ea5e9; }
+        .orange { color: #0284c7; }
+        
+        .table-container { 
+            margin: 0 20px 20px 20px; 
+            background: #dbeafe; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            overflow: auto;
+        }
+        
+        .table-header { 
+            padding: 20px; 
+            border-bottom: 1px solid #e5e7eb; 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #333; 
+        }
+        
+        .table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            min-width: 800px; 
+        }
+        
+        .table th, .table td { 
+            padding: 12px; 
+            text-align: left; 
+            border-bottom: 1px solid #93c5fd; 
+            font-size: 14px; 
+            background: white;
+        }
+        
+        .table th { 
+            background: #93c5fd; 
+            font-weight: bold; 
+            color: #1e3a8a; 
+        }
+        
+        .status-badge { 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: bold; 
+        }
+        
+        .status-completo { 
+            background: #dcfce7; 
+            color: #166534; 
+        }
+        
+        .status-incompleto { 
+            background: #fee2e2; 
+            color: #991b1b; 
+        }
+        
+        .status-fuera { 
+            background: #f3f4f6; 
+            color: #4b5563; 
+        }
+        
+        .btn-edit { 
+            background: #3b82f6; 
+            color: white; 
+            padding: 6px 12px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            transition: all 0.2s ease; 
+        }
+        
+        .btn-edit:hover { 
+            opacity: 0.8; 
+        }
+        
+        .btn-delete { 
+            background: transparent; 
+            color: #dc2626; 
+            padding: 6px 8px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: all 0.2s ease; 
+        }
+        
+        .btn-delete:hover { 
+            background: #fee2e2; 
+            color: #991b1b; 
+            transform: scale(1.1); 
+        }
+        
+        .modal { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: rgba(0,0,0,0.5); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+            z-index: 1000; 
+        }
+        
+        .modal-content { 
+            background: #dbeafe; 
+            padding: 30px; 
+            border-radius: 8px; 
+            width: 100%; 
+            max-width: 600px; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+        }
+
+@media (max-width: 600px) {
+    .modal-content {
+        padding: 15px;
+        max-height: 95vh;
+        max-width: 95%;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-title {
+        font-size: 14px;
+    }
+}
+        
+        .modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+        
+        .modal-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #333; 
+        }
+        
+        .btn-close { 
+            background: none; 
+            border: none; 
+            font-size: 24px; 
+            cursor: pointer; 
+            color: #666; 
+        }
+        
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
+        
+        .form-select { 
+            width: 100%; 
+            padding: 8px; 
+            border: 2px solid #ddd; 
+            border-radius: 4px; 
+            font-size: 14px; 
+        }
+        
+        .form-textarea { 
+            width: 100%; 
+            padding: 8px; 
+            border: 2px solid #ddd; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            resize: vertical; 
+            min-height: 80px; 
+        }
+        
+        .btn-group { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 20px; 
+        }
+        
+        .highlight-row { 
+            background: #bfdbfe !important; 
+        }
+        
+        .contador-normal { 
+            background: #dcfce7; 
+            color: #166534; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: bold; 
+        }
+        
+        .contador-proximo { 
+            background: #fef3c7; 
+            color: #92400e; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            animation: parpadeo 2s infinite; 
+        }
+        
+        .contador-urgente { 
+            background: #fed7d7; 
+            color: #c53030; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            animation: parpadeo 1s infinite; 
+        }
+        
+        .contador-vencido { 
+            background: #fee2e2; 
+            color: #991b1b; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            animation: parpadeo 0.5s infinite; 
+        }
+        
+        @keyframes parpadeo {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .planilla-changed {
+            background: #fef3c7 !important;
+            animation: highlight 1s ease-out;
+        }
+        
+        @keyframes highlight {
+            0% { background: #22c55e !important; }
+            100% { background: #fef3c7 !important; }
+        }
+        
+        .user-display { 
+            font-size: 14px; 
+            color: #666; 
+        }
+
+        .firebase-status {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .firebase-connected {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .firebase-disconnected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 10px; }
+            .header-actions { width: 100%; justify-content: center; flex-wrap: wrap; gap: 5px; }
+            .table-container { margin: 0 10px 20px 10px; 
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; }
+            .table { font-size: 12px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .btn-small { margin: 2px; font-size: 12px; padding: 6px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- La aplicación se cargará aquí -->
+    </div>
+
+    <!-- 🔥 FIREBASE CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // 🔥🔥🔥 REEMPLAZA ESTO CON TUS CREDENCIALES DE FIREBASE 🔥🔥🔥
+       const firebaseConfig = {
+  apiKey: "AIzaSyCtnraFe-_eK-7A1EIQrF5wwK5avFKX8UM",
+  authDomain: "control-kits-tratayen-ee261.firebaseapp.com",
+  databaseURL: "https://control-kits-tratayen-ee261-default-rtdb.firebaseio.com",
+  projectId: "control-kits-tratayen-ee261",
+  storageBucket: "control-kits-tratayen-ee261.firebasestorage.app",
+  messagingSenderId: "873407076249",
+  appId: "1:873407076249:web:7d15db98c0759009f76508"
+};
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // Estado de conexión
+        let firebaseConnected = false;
+        
+        // Verificar conexión
+        const connectedRef = database.ref('.info/connected');
+        connectedRef.on('value', (snap) => {
+            firebaseConnected = snap.val() === true;
+            console.log('Firebase conectado:', firebaseConnected);
+            updateConnectionStatus();
+        });
+
+        // Variables de la aplicación
+        let currentUser = '';
+        let isLoggedIn = false;
+        let editingKit = null;
+        let editingUser = null;
+        let showAddUser = false;
+        let showAddKit = false;
+        let showPlanilla = false;
+        let activeFilter = 'todos';
+        let newKit = { numero: '', precinto: '', area: 'Area 100', estado: 'Completo', responsable: '', comentario: '', ultimaInspeccion: '', proximaInspeccion: '' };
+
+        // Arrays locales (se sincronizarán con Firebase)
+        let users = [];
+        let kits = [];
+
+        const areas = ['Area 100', 'Area 200', 'Area 300', 'Area 400', 'Area 500', 'Area 600', 'Area 700', 'Area 800', 'Area 900', 'Area 1000', 'JT-Secin', 'JT-Seco', 'Propak1', 'Propak2'];
+        const estados = ['Completo', 'Incompleto', 'Fuera de servicio'];
+
+        // 🔥 FUNCIONES FIREBASE - CARGAR DATOS (CORREGIDO PARA ARRAYS)
+        function loadDataFromFirebase() {
+            // Cargar usuarios
+            database.ref('users').on('value', (snapshot) => {
+                const data = snapshot.val();
+                console.log('Datos de usuarios desde Firebase:', data);
+                if (data) {
+                    // Convertir a array si viene como objeto
+                    if (Array.isArray(data)) {
+                        users = data.filter(u => u !== null); // Eliminar elementos null
+                    } else {
+                        users = Object.values(data).filter(u => u !== null);
+                    }
+                    console.log('Usuarios cargados:', users);
+                } else {
+                    users = [];
+                }
+                if (isLoggedIn) render();
+            });
+
+            // Cargar kits
+            database.ref('kits').on('value', (snapshot) => {
+                const data = snapshot.val();
+                console.log('Datos de kits desde Firebase:', data);
+                if (data) {
+                    // Convertir a array si viene como objeto
+                    if (Array.isArray(data)) {
+                        kits = data.filter(k => k !== null); // Eliminar elementos null
+                    } else {
+                        kits = Object.values(data).filter(k => k !== null);
+                    }
+                    console.log('Kits cargados:', kits);
+                } else {
+                    kits = [];
+                }
+                if (isLoggedIn) render();
+            });
+        }
+
+        // 🔥 FUNCIONES FIREBASE - GUARDAR DATOS
+        function saveUsersToFirebase() {
+            database.ref('users').set(users);
+        }
+
+        function saveKitsToFirebase() {
+            database.ref('kits').set(kits);
+        }
+
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('firebase-status');
+            if (statusElement) {
+                if (firebaseConnected) {
+                    statusElement.innerHTML = '🟢 Sincronizado';
+                    statusElement.className = 'firebase-status firebase-connected';
+                } else {
+                    statusElement.innerHTML = '🔴 Sin conexión';
+                    statusElement.className = 'firebase-status firebase-disconnected';
+                }
+            }
+        }
+
+        // Funciones utilitarias
+        function isProximaInspeccion(fecha) {
+            const hoy = new Date();
+            const fechaInspeccion = new Date(fecha);
+            const diffTiempo = fechaInspeccion.getTime() - hoy.getTime();
+            const diffDias = Math.ceil(diffTiempo / (1000 * 3600 * 24));
+            return diffDias <= 7;
+        }
+
+        function diasRestantesInspeccion(fecha) {
+            const hoy = new Date();
+            const fechaInspeccion = new Date(fecha);
+            const diffTiempo = fechaInspeccion.getTime() - hoy.getTime();
+            const diffDias = Math.ceil(diffTiempo / (1000 * 3600 * 24));
+            return diffDias;
+        }
+
+        function getContadorClass(dias) {
+            if (dias < 0) return 'contador-vencido';
+            if (dias <= 3) return 'contador-urgente';
+            if (dias <= 7) return 'contador-proximo';
+            return 'contador-normal';
+        }
+
+        function getResponsables() {
+            return users.filter(u => u.role === 'operador' || u.username === 'Jefe de turno').map(u => u.username);
+        }
+
+        function getEstadoClass(estado) {
+            switch (estado) {
+                case 'Completo': return 'status-completo';
+                case 'Incompleto': return 'status-incompleto';
+                case 'Fuera de servicio': return 'status-fuera';
+                default: return 'status-completo';
+            }
+        }
+
+        // Función de login
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                currentUser = user.username;
+                isLoggedIn = true;
+                render();
+            } else {
+                alert('Usuario o contraseña incorrectos');
+            }
+        }
+
+        // Función de logout
+        function handleLogout() {
+            currentUser = '';
+            isLoggedIn = false;
+            editingKit = null;
+            editingUser = null;
+            showAddUser = false;
+            showAddKit = false;
+            showPlanilla = false;
+            activeFilter = 'todos';
+            render();
+        }
+
+        // Función para editar kit
+        function editKit(kitId) {
+            const kit = kits.find(k => k.id === kitId);
+            if (kit) {
+                editingKit = { ...kit };
+                render();
+            }
+        }
+
+        // Función para guardar kit (🔥 CON FIREBASE)
+        function saveKit() {
+            const index = kits.findIndex(k => k.id === editingKit.id);
+            if (index !== -1) {
+                kits[index] = { ...editingKit };
+                saveKitsToFirebase(); // 🔥 Guardar en Firebase
+                editingKit = null;
+                render();
+                alert('Kit actualizado exitosamente y sincronizado');
+            }
+        }
+
+        function cancelEdit() {
+            editingKit = null;
+            render();
+        }
+
+        function showAddUserForm() {
+            showAddUser = 'add';
+            render();
+        }
+
+        // Función para agregar usuario (🔥 CON FIREBASE)
+        function addUser() {
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+            
+            if (username && password) {
+                if (users.find(u => u.username === username)) {
+                    alert('El nombre de usuario ya existe');
+                    return;
+                }
+                
+                const now = new Date();
+                const fechaHora = now.toLocaleString('es-AR', {
+                    day: '2-digit',
+                    month: '2-digit', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                users.push({ 
+                    username, 
+                    password, 
+                    role: 'operador',
+                    ultimaModificacion: fechaHora,
+                    modificadoPor: currentUser
+                });
+                
+                saveUsersToFirebase(); // 🔥 Guardar en Firebase
+                showAddUser = 'management';
+                render();
+                alert('Usuario agregado exitosamente y sincronizado\n\nCreado: ' + fechaHora + '\nPor: ' + currentUser);
+            } else {
+                alert('Complete todos los campos');
+            }
+        }
+
+        function cancelAddUser() {
+            showAddUser = false;
+            render();
+        }
+
+        function showAddKitForm() {
+            showAddKit = true;
+            newKit = { numero: '', precinto: '', area: 'Area 100', estado: 'Completo', responsable: '', comentario: '', ultimaInspeccion: '', proximaInspeccion: '' };
+            render();
+        }
+
+        // Función para agregar kit (🔥 CON FIREBASE)
+        function addKit() {
+            const numero = document.getElementById('newKitNumero').value;
+            const precinto = document.getElementById('newKitPrecinto').value;
+            const area = document.getElementById('newKitArea').value;
+            const estado = document.getElementById('newKitEstado').value;
+            const responsable = document.getElementById('newKitResponsable').value;
+            const ultimaInspeccion = document.getElementById('newKitUltimaInspeccion').value;
+            const proximaInspeccion = document.getElementById('newKitProximaInspeccion').value;
+            const comentario = document.getElementById('newKitComentario').value;
+            
+            if (numero && precinto && responsable && ultimaInspeccion && proximaInspeccion) {
+                const maxId = kits.length > 0 ? Math.max(...kits.map(k => k.id)) : 0;
+                kits.push({ 
+                    id: maxId + 1, 
+                    numero, 
+                    precinto, 
+                    area, 
+                    estado, 
+                    responsable, 
+                    comentario, 
+                    ultimaInspeccion, 
+                    proximaInspeccion 
+                });
+                
+                saveKitsToFirebase(); // 🔥 Guardar en Firebase
+                showAddKit = false;
+                render();
+                alert('Kit agregado exitosamente y sincronizado');
+            } else {
+                alert('Complete todos los campos obligatorios');
+            }
+        }
+
+        function cancelAddKit() {
+            showAddKit = false;
+            render();
+        }
+
+        // Función para eliminar usuario (🔥 CON FIREBASE)
+        function deleteUser(username) {
+            if (username === currentUser) {
+                alert('No puede eliminar su propio usuario');
+                return;
+            }
+            if (confirm(`¿Está seguro que desea ELIMINAR el usuario "${username}"?\n\n⚠️ Esta acción:\n• Eliminará el usuario del sistema\n• No se puede deshacer\n• Los kits asignados mantendrán el nombre del responsable`)) {
+                users = users.filter(u => u.username !== username);
+                saveUsersToFirebase(); // 🔥 Guardar en Firebase
+                render();
+                alert('Usuario eliminado exitosamente');
+            }
+        }
+
+        // Función para eliminar kit (🔥 CON FIREBASE)
+        function deleteKit(kitId) {
+            const kit = kits.find(k => k.id === kitId);
+            if (kit && confirm(`¿Está seguro que desea ELIMINAR el kit "${kit.numero}" del área "${kit.area}"?\n\nEsta acción no se puede deshacer.`)) {
+                kits = kits.filter(k => k.id !== kitId);
+                saveKitsToFirebase(); // 🔥 Guardar en Firebase
+                render();
+                alert('Kit eliminado exitosamente');
+            }
+        }
+
+        function showUserManagement() {
+            if (currentUser !== 'Jefe de turno') {
+                alert('⚠️ Acceso Denegado\n\nSolo el Jefe de turno puede acceder a la gestión avanzada de usuarios.');
+                return;
+            }
+            showAddUser = 'management';
+            render();
+        }
+
+        function editUser(username) {
+            if (currentUser !== 'Jefe de turno' && username !== currentUser) {
+                alert('⚠️ Acceso Restringido\n\nSolo puede editar su propio usuario o ser Jefe de turno para editar cualquier usuario.');
+                return;
+            }
+            
+            const user = users.find(u => u.username === username);
+            if (user) {
+                editingUser = { ...user, originalUsername: username };
+                showAddUser = 'edit';
+                render();
+            }
+        }
+
+        // Función para guardar cambios de usuario (🔥 CON FIREBASE)
+        function saveUserChanges() {
+            const newUsername = document.getElementById('editUsername').value;
+            const newPassword = document.getElementById('editPassword').value;
+            
+            if (!newUsername || !newPassword) {
+                alert('Complete todos los campos');
+                return;
+            }
+            
+            if (newUsername !== editingUser.originalUsername && users.find(u => u.username === newUsername)) {
+                alert('El nombre de usuario ya existe');
+                return;
+            }
+            
+            const userIndex = users.findIndex(u => u.username === editingUser.originalUsername);
+            if (userIndex !== -1) {
+                const now = new Date();
+                const fechaHora = now.toLocaleString('es-AR', {
+                    day: '2-digit',
+                    month: '2-digit', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                users[userIndex].username = newUsername;
+                users[userIndex].password = newPassword;
+                users[userIndex].ultimaModificacion = fechaHora;
+                users[userIndex].modificadoPor = currentUser;
+                
+                if (editingUser.originalUsername === currentUser) {
+                    currentUser = newUsername;
+                }
+                
+                if (newUsername !== editingUser.originalUsername) {
+                    kits.forEach(kit => {
+                        if (kit.responsable === editingUser.originalUsername) {
+                            kit.responsable = newUsername;
+                        }
+                    });
+                    saveKitsToFirebase(); // 🔥 Actualizar kits también
+                }
+                
+                saveUsersToFirebase(); // 🔥 Guardar en Firebase
+            }
+            
+            editingUser = null;
+            showAddUser = 'management';
+            render();
+            alert('Usuario actualizado exitosamente y sincronizado\n\nFecha: ' + users[userIndex].ultimaModificacion + '\nModificado por: ' + currentUser);
+        }
+
+        function cancelEditUser() {
+            editingUser = null;
+            showAddUser = 'management';
+            render();
+        }
+
+        function setFilter(filter) {
+            activeFilter = filter;
+            const tableBody = document.querySelector('.table tbody');
+            if (tableBody) {
+                updateTableWithFilter();
+            } else {
+                render();
+            }
+        }
+
+        function updateTableWithFilter() {
+            const filteredKits = getFilteredKits();
+            const tableBody = document.querySelector('.table tbody');
+            const tableHeader = document.querySelector('.table-header');
+            
+            if (tableHeader) {
+                let headerText = 'Lista de Planta Tratayen ';
+                if (activeFilter === 'todos') {
+                    headerText += `- <span style="color: #059669; font-weight: bold;">✅ TODOS LOS KITS (${filteredKits.length})</span>`;
+                } else if (activeFilter === 'completos') {
+                    headerText += `- <span style="color: #059669; font-weight: bold;">🔍 SOLO COMPLETOS (${filteredKits.length})</span>`;
+                } else if (activeFilter === 'incompletos') {
+                    headerText += `- <span style="color: #dc2626; font-weight: bold;">🔍 SOLO INCOMPLETOS (${filteredKits.length})</span>`;
+                } else if (activeFilter === 'fuera-servicio') {
+                    headerText += `- <span style="color: #6b7280; font-weight: bold;">🔍 SOLO FUERA DE SERVICIO (${filteredKits.length})</span>`;
+                } else if (activeFilter === 'proximas') {
+                    headerText += `- <span style="color: #d97706; font-weight: bold;">🔍 SOLO PRÓXIMAS (${filteredKits.length})</span>`;
+                }
+                tableHeader.innerHTML = headerText;
+            }
+            
+            if (tableBody) {
+                if (filteredKits.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px; color: #dc2626; font-weight: bold;">
+                                🔍 No hay kits para el filtro seleccionado
+                                <br><br>
+                                <button onclick="setFilter('todos')" style="padding: 8px 16px; background: #059669; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                    Ver Todos los Kits
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tableBody.innerHTML = filteredKits.map(kit => {
+                        const diasRestantes = diasRestantesInspeccion(kit.proximaInspeccion);
+                        return `
+                        <tr style="background: ${activeFilter !== 'todos' ? '#f0f9ff' : 'white'};">
+                            <td><strong>${kit.numero}</strong></td>
+                            <td><strong style="color: #0ea5e9;">${kit.precinto}</strong></td>
+                            <td>${kit.area}</td>
+                            <td><span class="status-badge ${getEstadoClass(kit.estado)}">${kit.estado}</span></td>
+                            <td>${kit.responsable}</td>
+                            <td>${kit.proximaInspeccion}</td>
+                            <td><span class="${getContadorClass(diasRestantes)}">${diasRestantes >= 0 ? diasRestantes + ' días' : 'VENCIDO'}</span></td>
+                            <td>
+                                <button class="btn-edit" onclick="editKit(${kit.id})" style="margin-right: 5px;">Editar</button>
+                                <button class="btn-delete" onclick="deleteKit(${kit.id})" title="Eliminar">🗑️</button>
+                            </td>
+                        </tr>
+                        `;
+                    }).join('');
+                }
+            }
+            
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            const activeCard = document.querySelector(`[onclick="setFilter('${activeFilter}')"]`);
+            if (activeCard) {
+                activeCard.classList.add('active');
+            }
+        }
+
+        function getFilteredKits() {
+            let result = [];
+            
+            if (activeFilter === 'completos') {
+                result = kits.filter(k => k.estado === 'Completo');
+            } else if (activeFilter === 'incompletos') {
+                result = kits.filter(k => k.estado === 'Incompleto');
+            } else if (activeFilter === 'fuera-servicio') {
+                result = kits.filter(k => k.estado === 'Fuera de servicio');
+            } else if (activeFilter === 'proximas') {
+                result = kits.filter(k => isProximaInspeccion(k.proximaInspeccion));
+            } else {
+                result = kits;
+            }
+            
+            return result;
+        }
+
+        function showPlanillaControl() {
+            showPlanilla = true;
+            render();
+        }
+
+        // Función para actualizar kit desde planilla (🔥 CON FIREBASE)
+        function updateKitFromPlanilla(kitId, field, value) {
+            const kitIndex = kits.findIndex(k => k.id === kitId);
+            if (kitIndex !== -1) {
+                kits[kitIndex][field] = value;
+                
+                if (field === 'nuevoPrecinto' && value.trim() !== '') {
+                    kits[kitIndex]['precinto'] = value;
+                }
+                
+                saveKitsToFirebase(); // 🔥 Guardar automáticamente en Firebase
+                
+                const row = document.querySelector(`tr[data-kit-id="${kitId}"]`);
+                if (row) {
+                    row.classList.add('planilla-changed');
+                    setTimeout(() => row.classList.remove('planilla-changed'), 2000);
+                }
+                
+                updateStats();
+            }
+        }
+
+        function updateStats() {
+            const completos = kits.filter(k => k.estado === 'Completo').length;
+            const incompletos = kits.filter(k => k.estado === 'Incompleto').length;
+            const fueraServicio = kits.filter(k => k.estado === 'Fuera de servicio').length;
+            
+            const statsSummary = document.getElementById('stats-summary');
+            if (statsSummary) {
+                statsSummary.innerHTML = `
+                    <strong>📊 Estado actual:</strong> 
+                    ✅ Completos: ${completos} | 
+                    ❌ Incompletos: ${incompletos} | 
+                    ⚠️ Fuera de servicio: ${fueraServicio} | 
+                    <strong>Total: ${kits.length}</strong>
+                `;
+            }
+            
+            if (!showPlanilla) {
+                render();
+            }
+        }
+
+        function saveChangesFromPlanilla() {
+            const completos = kits.filter(k => k.estado === 'Completo').length;
+            const incompletos = kits.filter(k => k.estado === 'Incompleto').length;
+            const fueraServicio = kits.filter(k => k.estado === 'Fuera de servicio').length;
+            
+            alert(`Cambios guardados exitosamente:\n\n📊 Estado actual:\n✅ Completos: ${completos}\n❌ Incompletos: ${incompletos}\n⚠️ Fuera de servicio: ${fueraServicio}\n\nTotal de kits: ${kits.length}`);
+            showPlanilla = false;
+            render();
+        }
+
+        function closePlanilla() {
+            showPlanilla = false;
+            render();
+        }
+
+        function printPlanilla() {
+            const printContent = document.getElementById('planillaContent').innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            
+            render();
+        }
+
+        // Función principal de renderizado
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!isLoggedIn) {
+                app.innerHTML = `
+                    <div class="login-container">
+                        <div class="login-box">
+                            <h1 class="login-title">Control Kit de Derrame</h1>
+                            <p class="login-subtitle">Planta Tratayen</p>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Usuario</label>
+                                <input type="text" id="username" class="form-input" placeholder="Ingrese su usuario">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Contraseña</label>
+                                <input type="password" id="password" class="form-input" placeholder="Ingrese su contraseña">
+                            </div>
+                            
+                            <button class="btn" onclick="handleLogin()">Iniciar Sesión</button>
+                            
+                            <div id="firebase-status" class="firebase-status firebase-connected" style="margin-top: 15px; text-align: center;">
+                                🟢 Conectado a Firebase
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('username').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') handleLogin();
+                });
+                document.getElementById('password').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') handleLogin();
+                });
+                
+            } else {
+                const completos = kits.filter(k => k.estado === 'Completo').length;
+                const incompletos = kits.filter(k => k.estado === 'Incompleto').length;
+                const fueraServicio = kits.filter(k => k.estado === 'Fuera de servicio').length;
+                const proximasInspecciones = kits.filter(k => isProximaInspeccion(k.proximaInspeccion)).length;
+                
+                app.innerHTML = `
+                    <div class="main-container">
+                        <div class="header">
+                            <div>
+                                <div class="header-title">Control Kit de Derrame de Planta Tratayen</div>
+                                <div class="header-subtitle">${kits.length} Kits Activos</div>
+                            </div>
+                            <div class="header-actions">
+                                <div id="firebase-status" class="firebase-status firebase-connected">🟢 Sincronizado</div>
+                                <span class="user-display">Usuario: <strong>${currentUser}</strong></span>
+                                <button class="btn-small btn-green" onclick="showAddKitForm()">+ Agregar Kit</button>
+                                <button class="btn-small" style="background: #6366f1; color: white;" onclick="showPlanillaControl()">📋 Planilla Control</button>
+                                ${currentUser === 'Jefe de turno' ? '<button class="btn-small btn-green" onclick="showAddUserForm()">+ Agregar Usuario</button>' : ''}
+                                ${currentUser === 'Jefe de turno' ? '<button class="btn-small" style="background: #f59e0b; color: white;" onclick="showUserManagement()">👥 Gestionar Usuarios</button>' : ''}
+                                <button class="btn-small btn-red" onclick="handleLogout()">Salir</button>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card" id="filter-todos" onclick="setFilter('todos')" title="Ver todos los kits">
+                                <div class="stat-number" style="color: #059669;">${kits.length}</div>
+                                <div class="stat-label">📋 Todos los Kits</div>
+                            </div>
+                            <div class="stat-card" id="filter-completos" onclick="setFilter('completos')" title="Solo kits completos">
+                                <div class="stat-number green">${completos}</div>
+                                <div class="stat-label">✅ Kits Completos</div>
+                            </div>
+                            <div class="stat-card" id="filter-incompletos" onclick="setFilter('incompletos')" title="Solo kits incompletos">
+                                <div class="stat-number" style="color: #dc2626;">${incompletos}</div>
+                                <div class="stat-label">❌ Kits Incompletos</div>
+                            </div>
+                            <div class="stat-card" id="filter-fuera-servicio" onclick="setFilter('fuera-servicio')" title="Solo fuera de servicio">
+                                <div class="stat-number" style="color: #6b7280;">${fueraServicio}</div>
+                                <div class="stat-label">⚠️ Fuera de Servicio</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: center; margin: 10px 0;">
+                            <div class="stat-card" id="filter-proximas" onclick="setFilter('proximas')" title="Solo próximas inspecciones" style="width: 300px;">
+                                <div class="stat-number yellow">${proximasInspecciones}</div>
+                                <div class="stat-label">⏰ Próximas Inspecciones</div>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <div class="table-header">Lista de Planta Tratayen</div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Kit</th>
+                                        <th>Precinto</th>
+                                        <th>Área</th>
+                                        <th>Estado</th>
+                                        <th>Responsable</th>
+                                        <th>Próxima Inspección</th>
+                                        <th>Días Restantes</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${kits.map(kit => {
+                                        const diasRestantes = diasRestantesInspeccion(kit.proximaInspeccion);
+                                        return `
+                                        <tr class="${isProximaInspeccion(kit.proximaInspeccion) ? 'highlight-row' : ''}">
+                                            <td><strong>${kit.numero}</strong></td>
+                                            <td>${kit.precinto}</td>
+                                            <td>${kit.area}</td>
+                                            <td><span class="status-badge ${getEstadoClass(kit.estado)}">${kit.estado}</span></td>
+                                            <td>${kit.responsable}</td>
+                                            <td><span class="${isProximaInspeccion(kit.proximaInspeccion) ? 'blue' : ''}">${kit.proximaInspeccion}</span></td>
+                                            <td><span class="${getContadorClass(diasRestantes)}">${diasRestantes >= 0 ? diasRestantes + ' días' : 'VENCIDO (' + Math.abs(diasRestantes) + ' días)'}</span></td>
+                                            <td>
+                                                <button class="btn-edit" onclick="editKit(${kit.id})" style="margin-right: 5px;">Editar</button>
+                                                <button class="btn-delete" onclick="deleteKit(${kit.id})" title="Eliminar este kit">🗑️</button>
+                                            </td>
+                                        </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    ${editingKit ? renderEditModal() : ''}
+                    ${(showAddUser === 'add' || showAddUser === 'management' || showAddUser === 'edit') ? renderAddUserModal() : ''}
+                    ${showAddKit ? renderAddKitModal() : ''}
+                    ${showPlanilla ? renderPlanillaModal() : ''}
+                `;
+                
+                updateConnectionStatus();
+            }
+        }
+
+        // [Las demás funciones render permanecen iguales - renderEditModal, renderAddUserModal, renderAddKitModal, renderPlanillaModal]
+        // Por brevedad, las omito aquí pero son exactamente iguales a tu código original
+
+        function renderEditModal() {
+            return `
+                <div class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Editar Kit: ${editingKit.numero}</h3>
+                            <button class="btn-close" onclick="cancelEdit()">&times;</button>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Número de Precinto</label>
+                                <input type="text" class="form-input" value="${editingKit.precinto}" 
+                                       onchange="editingKit.precinto = this.value">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Área</label>
+                                <select class="form-select" onchange="editingKit.area = this.value">
+                                    ${areas.map(area => 
+                                        `<option value="${area}" ${editingKit.area === area ? 'selected' : ''}>${area}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" onchange="editingKit.estado = this.value">
+                                    ${estados.map(estado => 
+                                        `<option value="${estado}" ${editingKit.estado === estado ? 'selected' : ''}>${estado}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Responsable</label>
+                                <select class="form-select" onchange="editingKit.responsable = this.value">
+                                    ${getResponsables().map(responsable => 
+                                        `<option value="${responsable}" ${editingKit.responsable === responsable ? 'selected' : ''}>${responsable}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Última Inspección</label>
+                                <input type="date" class="form-input" value="${editingKit.ultimaInspeccion}" 
+                                       onchange="editingKit.ultimaInspeccion = this.value">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Próxima Inspección</label>
+                                <input type="date" class="form-input" value="${editingKit.proximaInspeccion}" 
+                                       onchange="editingKit.proximaInspeccion = this.value">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Comentarios</label>
+                            <textarea class="form-textarea" placeholder="Agregue aquí cualquier comentario sobre el kit..." 
+                                      onchange="editingKit.comentario = this.value">${editingKit.comentario}</textarea>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-green" onclick="saveKit()">Guardar Cambios</button>
+                            <button class="btn" onclick="cancelEdit()">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddUserModal() {
+            if (showAddUser === 'edit') {
+                return `
+                    <div class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">✏️ Editar Usuario: ${editingUser.originalUsername}</h3>
+                                <button class="btn-close" onclick="cancelEditUser()">&times;</button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Nombre de Usuario</label>
+                                <input type="text" id="editUsername" class="form-input" value="${editingUser.username}" placeholder="Nombre de usuario">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Contraseña</label>
+                                <input type="text" id="editPassword" class="form-input" value="${editingUser.password}" placeholder="Contraseña">
+                                <small style="color: #6b7280; font-size: 12px;">✏️ Como Jefe de turno, puede ver y modificar contraseñas</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Rol</label>
+                                <select class="form-select" disabled>
+                                    <option>${editingUser.role === 'admin' ? '👑 Administrador' : '👤 Operador'}</option>
+                                </select>
+                                <small style="color: #6b7280; font-size: 12px;">El rol no se puede modificar</small>
+                            </div>
+                            
+                            ${currentUser === 'Jefe de turno' ? `
+                                <div style="padding: 15px; background: #f0f9ff; border-radius: 6px; margin: 10px 0; border-left: 4px solid #3b82f6;">
+                                    <strong>📊 Información de Seguimiento (Solo Jefe de turno):</strong><br>
+                                    <strong>📅 Última modificación:</strong> ${editingUser.ultimaModificacion || 'Sin registros'}<br>
+                                    <strong>👤 Modificado por:</strong> ${editingUser.modificadoPor || 'Sistema'}<br>
+                                    <strong>🔐 Contraseña actual:</strong> ${editingUser.password}
+                                </div>
+                            ` : ''}
+                            
+                            ${editingUser.originalUsername === currentUser ? 
+                                '<div style="padding: 10px; background: #fef3c7; border-radius: 6px; border-left: 4px solid #f59e0b; margin: 10px 0;"><strong>⚠️ Atención:</strong> Está editando su propio usuario. Los cambios se aplicarán inmediatamente.</div>' 
+                                : ''
+                            }
+                            
+                            <div class="btn-group">
+                                <button class="btn btn-green" onclick="saveUserChanges()">💾 Guardar Cambios</button>
+                                <button class="btn" onclick="cancelEditUser()">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (showAddUser === 'management') {
+                return `
+                    <div class="modal">
+                        <div class="modal-content" style="max-width: 1000px;">
+                            <div class="modal-header">
+                                <h3 class="modal-title">👑 Gestión Avanzada de Usuarios - Jefe de Turno</h3>
+                                <button class="btn-close" onclick="cancelAddUser()">&times;</button>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                                <button class="btn btn-green" onclick="showAddUserForm()">➕ Agregar Nuevo Usuario</button>
+                                <div style="padding: 8px 12px; background: #f0f9ff; border-radius: 6px; font-size: 12px; color: #1e40af;">
+                                    👑 <strong>Acceso Jefe de turno:</strong> Puede ver contraseñas y modificaciones
+                                </div>
+                            </div>
+                            
+                            <div style="overflow-x: auto;">
+                                <table class="table" style="margin-bottom: 0; min-width: 800px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Rol</th>
+                                            <th>🔐 Contraseña</th>
+                                            <th>📅 Última Modificación</th>
+                                            <th>👤 Modificado Por</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${users.map(user => `
+                                            <tr ${user.username === currentUser ? 'style="background: #eff6ff;"' : ''}>
+                                                <td>
+                                                    <strong>${user.username}</strong>
+                                                    ${user.username === currentUser ? '<span style="color: #3b82f6; font-size: 11px; margin-left: 5px;">👤 (Usted)</span>' : ''}
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge ${user.role === 'admin' ? 'status-completo' : 'status-incompleto'}">
+                                                        ${user.role === 'admin' ? '👑 Admin' : '👤 Operador'}
+                                                    </span>
+                                                </td>
+                                                <td style="font-family: monospace; background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">
+                                                    <strong style="color: #dc2626;">${user.password}</strong>
+                                                </td>
+                                                <td style="font-size: 12px; color: #6b7280;">
+                                                    ${user.ultimaModificacion || 'Sin registros'}
+                                                </td>
+                                                <td style="font-size: 12px;">
+                                                    <span class="status-badge ${user.modificadoPor === 'Sistema' ? 'status-fuera' : 'status-completo'}">
+                                                        ${user.modificadoPor || 'Sistema'}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge status-completo">🟢 Activo</span>
+                                                </td>
+                                                <td style="display: flex; gap: 5px; align-items: center;">
+                                                    <button class="btn-edit" onclick="editUser('${user.username}')" title="Editar usuario">
+                                                        ✏️ Editar
+                                                    </button>
+                                                    ${user.username !== currentUser ? 
+                                                        `<button class="btn-delete" onclick="deleteUser('${user.username}')" title="Eliminar usuario">🗑️</button>` 
+                                                        : '<span style="color: #6b7280; font-size: 10px;">Protegido</span>'
+                                                    }
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px; font-size: 14px;">
+                                <strong>👑 Privilegios del Jefe de turno:</strong><br>
+                                • 🔐 <strong>Ver contraseñas:</strong> Acceso completo a todas las contraseñas<br>
+                                • ✏️ <strong>Modificar usuarios:</strong> Cambiar nombres y contraseñas<br>
+                                • 📊 <strong>Historial completo:</strong> Ver quién y cuándo modificó cada usuario<br>
+                                • 🗑️ <strong>Eliminar usuarios:</strong> Remover usuarios del sistema<br>
+                                • ➕ <strong>Crear usuarios:</strong> Agregar nuevos operadores<br>
+                                <br>
+                                <strong>🔒 Seguridad:</strong> Esta información solo es visible para el Jefe de turno.
+                            </div>
+                            
+                            <div class="btn-group" style="margin-top: 20px;">
+                                <button class="btn" onclick="cancelAddUser()">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">➕ Agregar Nuevo Usuario</h3>
+                                <button class="btn-close" onclick="cancelAddUser()">&times;</button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Usuario</label>
+                                <input type="text" id="newUsername" class="form-input" placeholder="Nombre de usuario">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Contraseña</label>
+                                <input type="text" id="newPassword" class="form-input" placeholder="Contraseña">
+                                <small style="color: #6b7280; font-size: 12px;">💡 Como Jefe de turno, puede establecer cualquier contraseña</small>
+                            </div>
+                            
+                            <div style="padding: 10px; background: #e0f2fe; border-radius: 6px; margin: 10px 0; font-size: 14px;">
+                                <strong>ℹ️ Información:</strong> El nuevo usuario se creará como <strong>👤 Operador</strong> con acceso completo a kits y planillas.<br>
+                                <strong>📅 Registro:</strong> Se guardará la fecha/hora de creación y su nombre como creador.
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button class="btn btn-green" onclick="addUser()">➕ Crear Usuario</button>
+                                <button class="btn" onclick="showUserManagement()">← Volver a Gestión</button>
+                                <button class="btn" onclick="cancelAddUser()">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderAddKitModal() {
+            return `
+                <div class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Agregar Nuevo Kit de Derrame</h3>
+                            <button class="btn-close" onclick="cancelAddKit()">&times;</button>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Número de Kit *</label>
+                                <input type="text" id="newKitNumero" class="form-input" placeholder="KIT-016">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Número de Precinto *</label>
+                                <input type="text" id="newKitPrecinto" class="form-input" placeholder="0016">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Área *</label>
+                                <select id="newKitArea" class="form-select">
+                                    ${areas.map(area => `<option value="${area}">${area}</option>`).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Estado *</label>
+                                <select id="newKitEstado" class="form-select">
+                                    ${estados.map(estado => `<option value="${estado}">${estado}</option>`).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Responsable *</label>
+                                <select id="newKitResponsable" class="form-select">
+                                    ${getResponsables().map(responsable => `<option value="${responsable}">${responsable}</option>`).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Última Inspección *</label>
+                                <input type="date" id="newKitUltimaInspeccion" class="form-input">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Próxima Inspección *</label>
+                                <input type="date" id="newKitProximaInspeccion" class="form-input">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Comentarios</label>
+                            <textarea id="newKitComentario" class="form-textarea" placeholder="Comentarios adicionales..."></textarea>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-green" onclick="addKit()">Agregar Kit</button>
+                            <button class="btn" onclick="cancelAddKit()">Cancelar</button>
+                        </div>
+                        
+                        <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                            * Campos obligatorios
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPlanillaModal() {
+            return `
+                <div class="modal">
+                    <div class="modal-content" style="max-width: 95%; width: 1200px;">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Planilla de Control Interactiva - Planta Tratayen</h3>
+                            <div>
+                                <button class="btn-small btn-green" onclick="saveChangesFromPlanilla()" style="margin-right: 10px;">💾 Guardar Cambios</button>
+                                <button class="btn-small" style="background: #6366f1; color: white; margin-right: 10px;" onclick="printPlanilla()">🖨️ Imprimir</button>
+                                <button class="btn-close" onclick="closePlanilla()">&times;</button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px; padding: 10px; background: #e0f2fe; border-radius: 6px; border-left: 4px solid #0ea5e9;">
+                            <strong>📝 Planilla Interactiva:</strong> Los cambios se guardan automáticamente en Firebase y se sincronizan con todos los usuarios.<br>
+                            <div id="stats-summary" style="margin-top: 8px; font-size: 14px;">
+                                <strong>📊 Estado actual:</strong> 
+                                ✅ Completos: ${kits.filter(k => k.estado === 'Completo').length} | 
+                                ❌ Incompletos: ${kits.filter(k => k.estado === 'Incompleto').length} | 
+                                ⚠️ Fuera de servicio: ${kits.filter(k => k.estado === 'Fuera de servicio').length} | 
+                                <strong>Total: ${kits.length}</strong>
+                            </div>
+                        </div>
+                        
+                        <div id="planillaContent">
+                            <style>
+                                @media print {
+                                    body * { visibility: hidden; }
+                                    #planillaContent, #planillaContent * { visibility: visible; }
+                                    #planillaContent { position: absolute; left: 0; top: 0; width: 100%; }
+                                    .no-print { display: none !important; }
+                                    .planilla-select { border: 1px solid #333 !important; background: white !important; }
+                                    .planilla-input { border: 1px solid #333 !important; background: white !important; }
+                                }
+                                .planilla-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                                .planilla-table th, .planilla-table td { border: 1px solid #333; padding: 8px; text-align: left; vertical-align: middle; }
+                                .planilla-table th { background: #f0f0f0; font-weight: bold; }
+                                .planilla-header { text-align: center; margin-bottom: 20px; }
+                                .fecha-actual { text-align: right; margin-bottom: 10px; }
+                                .planilla-input { border: 1px solid #ccc; background: white; width: 100%; padding: 4px; font-size: 12px; }
+                                .planilla-select { border: 1px solid #ccc; background: white; width: 100%; padding: 4px; font-size: 12px; }
+                                .estado-completo { background: #dcfce7; color: #166534; }
+                                .estado-incompleto { background: #fee2e2; color: #991b1b; }
+                                .estado-fuera-de-servicio { background: #f3f4f6; color: #4b5563; }
+                                .estado-fuera { background: #f3f4f6; color: #4b5563; }
+                                .planilla-row-changed { background: #fef3c7 !important; }
+                            </style>
+                            
+                            <div class="planilla-header">
+                                <h2>PLANILLA DE CONTROL DE KITS DE DERRAMES</h2>
+                                <h3>PLANTA TRATAYEN</h3>
+                            </div>
+                            
+                            <div class="fecha-actual">
+                                <strong>Fecha: ${new Date().toLocaleDateString('es-AR')}</strong>
+                            </div>
+                            
+                            <table class="planilla-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 8%;">Kit</th>
+                                        <th style="width: 12%;">Área</th>
+                                        <th style="width: 15%;">Estado</th>
+                                        <th style="width: 15%;">Responsable</th>
+                                        <th style="width: 12%;">Precinto Actual</th>
+                                        <th style="width: 12%;">Nuevo Precinto</th>
+                                        <th style="width: 10%;">Fecha Revisión</th>
+                                        <th style="width: 16%;">Comentarios</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${kits.map(kit => `
+                                        <tr data-kit-id="${kit.id}">
+                                            <td><strong>${kit.numero}</strong></td>
+                                            <td>${kit.area}</td>
+                                            <td>
+                                                <select class="planilla-select estado-${kit.estado.toLowerCase().replace(/\s+/g, '-')}" 
+                                                        onchange="updateKitFromPlanilla(${kit.id}, 'estado', this.value); this.className = 'planilla-select estado-' + this.value.toLowerCase().replace(/\\s+/g, '-');">
+                                                    ${estados.map(estado => 
+                                                        `<option value="${estado}" ${kit.estado === estado ? 'selected' : ''}>${estado}</option>`
+                                                    ).join('')}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="planilla-select" onchange="updateKitFromPlanilla(${kit.id}, 'responsable', this.value)">
+                                                    ${getResponsables().map(responsable => 
+                                                        `<option value="${responsable}" ${kit.responsable === responsable ? 'selected' : ''}>${responsable}</option>`
+                                                    ).join('')}
+                                                </select>
+                                            </td>
+                                            <td><strong id="precinto-actual-${kit.id}">${kit.precinto}</strong></td>
+                                            <td>
+                                                <input type="text" class="planilla-input" 
+                                                       placeholder="Ej: 0016..." 
+                                                       onchange="if(this.value.trim() !== '') { 
+                                                                   updateKitFromPlanilla(${kit.id}, 'precinto', this.value); 
+                                                                   document.getElementById('precinto-actual-${kit.id}').textContent = this.value;
+                                                                   this.style.background = '#dcfce7';
+                                                                 }"
+                                                       style="font-weight: bold; color: #0ea5e9;">
+                                            </td>
+                                            <td>
+                                                <input type="date" class="planilla-input" 
+                                                       onchange="updateKitFromPlanilla(${kit.id}, 'ultimaInspeccion', this.value); 
+                                                                const proximaFecha = new Date(this.value); 
+                                                                proximaFecha.setMonth(proximaFecha.getMonth() + 1); 
+                                                                updateKitFromPlanilla(${kit.id}, 'proximaInspeccion', proximaFecha.toISOString().split('T')[0]);">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="planilla-input" 
+                                                       value="${kit.comentario}" 
+                                                       onchange="updateKitFromPlanilla(${kit.id}, 'comentario', this.value)"
+                                                       placeholder="Observaciones...">
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            
+                            <div style="margin-top: 30px;">
+                                <table style="width: 100%; border: none;">
+                                    <tr>
+                                        <td style="width: 33%; border: none; text-align: center;">
+                                            <br><br>
+                                            ________________________________<br>
+                                            <strong>Firma Responsable Turno</strong>
+                                        </td>
+                                        <td style="width: 33%; border: none; text-align: center;">
+                                            <br><br>
+                                            ________________________________<br>
+                                            <strong>Firma Supervisor</strong>
+                                        </td>
+                                        <td style="width: 34%; border: none; text-align: center;">
+                                            <br><br>
+                                            ________________________________<br>
+                                            <strong>Firma Jefe de Turno</strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div style="margin-top: 20px; font-size: 12px;">
+                                <strong>Observaciones Generales:</strong><br>
+                                <div style="border: 1px solid #333; min-height: 60px; padding: 10px; margin-top: 5px;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="btn-group no-print" style="margin-top: 20px;">
+                            <button class="btn btn-green" onclick="saveChangesFromPlanilla()">💾 Guardar y Cerrar</button>
+                            <button class="btn" style="background: #6366f1; color: white;" onclick="printPlanilla()">🖨️ Imprimir Planilla</button>
+                            <button class="btn" onclick="closePlanilla()">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 🔥 INICIALIZAR APLICACIÓN CON FIREBASE
+        loadDataFromFirebase();
+        render();
+    </script>
+</body>
+</html>
